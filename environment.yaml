@@ -1,0 +1,5 @@
+parameters:
+  external_network: public
+  image: rhel-guest-image-7.5-0
+  flavor: m1.medium
+  key: root

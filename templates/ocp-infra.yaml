@@ -1,0 +1,54 @@
+heat_template_version: 2013-05-23
+description: OpenShift Infrastructure Node
+parameters:
+  hostname:
+    type: string
+    description: Node hostname
+  image:
+    type: string
+    description: Image to use
+    default: rhel-guest-image-7.5-update-3
+  flavor:
+    type: string
+    description: Flavor to use
+    default: m1.medium
+  key:
+    type: string
+    description: Key to use
+    default: root
+
+resources:
+  server:
+    type: OS::Nova::Server
+    properties:
+      name: { get_param: hostname }
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key }
+      networks:
+      - network: control-network
+      - network: tenant-network
+      security_groups:
+      - infra-node-sg
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #cloud-config
+            fqdn: $hostname
+            manage_etc_hosts: false
+          params:
+            $hostname: { get_param: hostname }
+
+  docker-volume:
+    type: OS::Cinder::Volume
+    properties:
+      size: 8
+  
+  docker-volume-att:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid: { get_resource: server }
+      volume_id: { get_resource: docker-volume }
+      mountpoint: /dev/vdb
+
