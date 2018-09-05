@@ -5,7 +5,7 @@ This is a simple set of heat templates that can be used to build out
 the instances required for an OpenShift deployment.  These instances
 can then be automated via Ansible.
 
-The main template is [templates/ocp.yaml](ocp.yaml). It includes
+The main template is [templates/ocp.yaml](templates/ocp.yaml). It includes
 resource definitions for the master, infrastructure node, and
 application node instance type.
 
